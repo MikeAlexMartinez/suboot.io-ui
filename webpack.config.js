@@ -19,14 +19,21 @@ var config = {
         use: 'babel-loader'
       },
       {
+        test: /\.css$/,
+        use: ['style-loader', 'css-loader', {
+          loader: 'postcss-loader',
+          options: {
+            plugins: () => [require('autoprefixer')]
+          }
+        }]
+      },
+      {
         test: /\.(scss)$/,
         use: ['style-loader', 'css-loader', {
           loader: 'postcss-loader',
           options: {
             plugins: () => [require('autoprefixer')]
-          }},
-          'sass-loader'
-        ]
+          }}, 'sass-loader']
       }
     ]
   },
@@ -49,7 +56,7 @@ if (process.env.NODE_ENV === 'production') {
       }
     }),
     new UglifyJsPlugin()
-  )
+  );
 }
 
 module.exports = config;

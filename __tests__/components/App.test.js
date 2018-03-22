@@ -1,13 +1,15 @@
-const React = require('react');
-const App = require('../../app/components/App');
+import React from 'react';
+import App from '../../app/components/App';
 
-const { shallow } = require('enzyme');
+import { shallow } from 'enzyme';
 
 describe('<App />', () => {
 
   test('should render app', () => {
 
-
+    const wrapper = shallow(<App />);
+    expect(wrapper.contains(<div className='app'>Hello World!</div>))
+      .toEqual(true);
   });
 
 });
