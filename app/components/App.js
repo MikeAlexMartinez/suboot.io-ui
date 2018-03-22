@@ -1,5 +1,5 @@
 import React from 'react';
-import { BrowserRouter, Switch, Route } from 'react-router-dom';
+import { BrowserRouter, Switch, Route, Redirect } from 'react-router-dom';
 
 import TitleBar from './TitleBar';
 import NavBar from './NavBar';
@@ -19,9 +19,12 @@ class App extends React.Component {
           <TitleBar />
           <NavBar />
           <Switch>
-            <Route path='/explore' component={Explore}></Route>
-            <Route path='/general' component={General}></Route>
-            <Route path='/leaguetables' component={LeagueTables}></Route>
+            <Route exact path='/' render={() => (
+              <Redirect to='/general?home=true' />
+            )} />
+            <Route path='/explore' component={Explore} />
+            <Route path='/general' component={General} />
+            <Route path='/leaguetables' component={LeagueTables} />
             <Route render={function() {
               return <p>Not Found!</p>;
             }} />

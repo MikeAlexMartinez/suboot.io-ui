@@ -1,13 +1,33 @@
 @import "../globals/vars";
 
 .nav-bar {
+  z-index: 10;
   position: fixed;
   top: $bar-height;
   left: 0;
   height: $bar-height;
   width: $full-width;
   background-color: $primary-color-counter;
+  box-shadow: $box-shadow;
 
   text-align: center;
-  color: $primary-color-counter-active;
+
+  a {
+    padding: 15px;
+    display: inline-block;
+    height: $bar-height - 30px;
+    width: $full-width / 5;
+
+    line-height: $bar-height - 30;
+    font-size: $font-size-nav;
+    color: $primary-color-counter-active;
+    text-decoration: none;
+    vertical-align: center; 
+  }
+
+  .navlink.active {
+    background-color: $primary-color-counter-active;
+    color: $primary-color-counter;
+    box-shadow: inset 0px -10px 0px 0px $primary-color;
+  }
 }

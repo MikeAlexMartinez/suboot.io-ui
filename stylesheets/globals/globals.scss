@@ -1,10 +1,16 @@
 @import "../globals/vars";
 
 .app-content {
+  z-index: 1;
   position: absolute;
-  top: $bar-height * 2;
+  top: 0;
   left: 0;
+  height: 100%;
+  padding-top: ($bar-height * 2);
   width: 100%;
-  height: calc(100% - ($bar-height * 2));
   background-color: $primary-color-counter-active;
+}
+
+a {
+  text-decoration: none;
 }

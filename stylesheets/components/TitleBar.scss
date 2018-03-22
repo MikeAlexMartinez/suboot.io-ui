@@ -1,13 +1,25 @@
 @import "../globals/vars";
 
 .title-bar {
+  z-index: 20;
   position: fixed;
   top: 0;
   left: 0;
   height: $bar-height;
   width: $full-width;
   background-color: $primary-color;
+  box-shadow: $box-shadow;
 
   text-align: center;
-  color: $primary-color-counter;
+
+  h1 {
+    font-size: $font-size-title;
+    margin: 0;
+    line-height: $bar-height;
+  }
+
+  a {
+    text-decoration: none; 
+    color: $primary-color-counter;
+  }
 }
