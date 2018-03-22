@@ -1,0 +1,13 @@
+@import "../globals/vars";
+
+.nav-bar {
+  position: fixed;
+  top: $bar-height;
+  left: 0;
+  height: $bar-height;
+  width: $full-width;
+  background-color: $primary-color-counter;
+
+  text-align: center;
+  color: $primary-color-counter-active;
+}

@@ -1,3 +1,6 @@
+@import "~normalize.css";
+@import "../globals/vars";
+
 body {
-  background-color: green;
+  font-family: -apple-system, BlinkMacSystemFont, Segoe UI, Roboto, Oxygen-Sans, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
 }

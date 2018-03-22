@@ -1,0 +1,13 @@
+@import "../globals/vars";
+
+.title-bar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  height: $bar-height;
+  width: $full-width;
+  background-color: $primary-color;
+
+  text-align: center;
+  color: $primary-color-counter;
+}
