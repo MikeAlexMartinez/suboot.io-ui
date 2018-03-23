@@ -2,7 +2,7 @@ module.exports = {
   "env": {
       "browser": true,
       "commonjs": true,
-      // "es6": true,
+      "es6": true,
       "jest/globals": true,
   },
   "extends": [
@@ -11,7 +11,7 @@ module.exports = {
   ],
   "parserOptions": {
       "ecmaFeatures": {
-          // "experimentalObjectRestSpread": true,
+          "experimentalObjectRestSpread": true,
           "jsx": true
       },
       "sourceType": "module"
