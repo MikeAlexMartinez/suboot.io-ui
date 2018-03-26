@@ -6,7 +6,7 @@ require('../../stylesheets/components/LeagueTables.scss');
 
 const LeagueTables = () => (
   <div className='app-content'>
-    <TableContainer />
+    <TableContainer max={31} />
   </div>
 );
 

@@ -4,7 +4,6 @@ import 'rc-slider/assets/index.css';
 import 'rc-tooltip/assets/bootstrap.css';
 
 import React from 'react';
-import {withStyles} from 'material-ui/styles';
 import Button from 'material-ui/Button';
 import Tooltip from 'rc-tooltip';
 import Slider from 'rc-slider';
@@ -13,17 +12,25 @@ const createSliderWithToolTip = Slider.createSliderWithTooltip;
 const Range = createSliderWithToolTip(Slider.Range);
 const Handle = Slider.Handle;
 
-const rangeStyle = { width: 400, margin: 50, display: 'inline-block' };
+const rangeStyle = { 
+  width: '40%',
+  marginLeft: 20,
+  marginRight: 20,
+  display: 'inline-block',
+};
 
-function log(value) {
-  console.log(value);
-}
-
-const buttonStyles = theme => ({
-  button: {
-    margin: theme.spacing.unit,
-  },
-});
+const fixtureTypes = [
+  {
+    name: 'All',
+    active: true,
+  }, {
+    name: 'Home',
+    active: false,
+  }, {
+    name: 'Away',
+    active: false,
+  }
+];
 
 const sliderOptions = [
   {
@@ -41,18 +48,19 @@ const sliderOptions = [
   }
 ];
 
-const SliderButtons = withStyles(buttonStyles)((props) => {
-  const { classes, options } = props;
+const SliderButtons = (props) => {
+  const { options, changeValue } = props;
   return (
-    <div>
+    <div className={`range-options ${props.position}`}>
       {options.map((opt) => {
         return (
           <Button 
             key={opt.name.replace(' ', '-').toLowerCase()}
             variant="raised"
             size="small"
-            color={opt.active ? 'primary' : 'default'} 
-            className={classes.button}
+            color={opt.active ? 'primary' : 'default'}
+            styles={{marginLeft: '5px'}}
+            onClick={() => changeValue(opt.name.replace(' ','-').toLowerCase())}
           >
             {opt.name}
           </Button>
@@ -60,7 +68,7 @@ const SliderButtons = withStyles(buttonStyles)((props) => {
       })}
     </div>
   );
-});
+};
 
 const handle = (props) => {
   const {value, dragging, index, ...restProps} = props;
@@ -77,24 +85,41 @@ const handle = (props) => {
   );
 };
 
-class GameweekRange extends React.Component {
+class TableSettings extends React.Component {
   render() {
+    const {rangeStart, rangeEnd, 
+      rangeClick, fixturesClick, setRange} = this.props;
     return (
-      <div>
-        <SliderButtons options={sliderOptions} />
+      <div className='table-settings'>
+        <SliderButtons 
+          options={sliderOptions} 
+          position='left' 
+          changeValue={rangeClick}
+        />
         <div style={rangeStyle}>
           <Range 
             allowCross={false}
             pushable={true}
-            defaultValue={[0,31]}
-            onChange={log}
+            defaultValue={[rangeStart,rangeEnd]}
+            onAfterChange={(values) => setRange(values)}
             handle={handle}
             max={31}
+            railStyle={{
+              backgroundColor: '##00766c',
+            }}
+            dotStyle={{
+              backgroundColor: '##00766c',
+            }}
           />
         </div>
+        <SliderButtons 
+          options={fixtureTypes}
+          position='right'
+          changeValue={fixturesClick}
+        />
       </div>
     );
   }
 }
 
-export default GameweekRange;
+export default TableSettings;

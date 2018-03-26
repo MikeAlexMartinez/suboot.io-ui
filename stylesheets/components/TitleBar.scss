@@ -7,7 +7,7 @@
   left: 0;
   height: $bar-height;
   width: $full-width;
-  background-color: $primary-color;
+  background-color: $primary-color-dark;
   box-shadow: $box-shadow;
 
   text-align: center;
@@ -20,6 +20,6 @@
 
   a {
     text-decoration: none; 
-    color: $primary-color-counter;
+    color: $secondary-color-contrastText;
   }
 }

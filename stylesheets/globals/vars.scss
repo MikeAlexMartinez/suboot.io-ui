@@ -1,17 +1,22 @@
 /** Sizing **/
-$bar-height: 80px;
+$bar-height: 60px;
 $full-width: 100%;
 
 /** Colors **/
-$primary-color: #5BEE64;
-$primary-color-dull: #7ACC7F;
-$primary-color-counter: #7A7A7A;
-$primary-color-counter-active: #EEEEEE;
+$primary-color-main: #26a69a;
+$primary-color-light: #64d8cb;
+$primary-color-dark: #00766c;
+$primary-color-contrastText: #000;
+
+$secondary-color-light: #a4a4a4;
+$secondary-color-main: #757575;
+$secondary-color-dark: #494949;
+$secondary-color-contrastText: #fff;
 
 /** Font **/
 $font-size-title: 40px;
 $font-size-nav: 20px;
 
 /** other **/
-
-$box-shadow: 0 5px 10px 0 rgba(0, 0, 0, 0.3);
+$box-shadow-color: rgba(0, 0, 0, 0.2);
+$box-shadow: 0 5px 10px 0 $box-shadow-color;

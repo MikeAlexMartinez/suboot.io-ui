@@ -7,7 +7,7 @@
   left: 0;
   height: $bar-height;
   width: $full-width;
-  background-color: $primary-color-counter;
+  background-color: $secondary-color-main;
   box-shadow: $box-shadow;
 
   text-align: center;
@@ -15,19 +15,21 @@
   a {
     padding: 15px;
     display: inline-block;
-    height: $bar-height - 30px;
+    height: $bar-height - 20px;
     width: $full-width / 5;
 
     line-height: $bar-height - 30;
     font-size: $font-size-nav;
-    color: $primary-color-counter-active;
+    color: $secondary-color-contrastText;
     text-decoration: none;
     vertical-align: center; 
   }
 
   .navlink.active {
-    background-color: $primary-color-counter-active;
-    color: $primary-color-counter;
-    box-shadow: inset 0px -10px 0px 0px $primary-color;
+    background-color: $secondary-color-contrastText;
+    color: $primary-color-contrastText;
+    box-shadow: inset 0px -10px 0px 0px $primary-color-main,
+      inset 5px 0px 10px 0px $box-shadow-color,
+      inset -5px 0px 10px 0px $box-shadow-color;
   }
 }

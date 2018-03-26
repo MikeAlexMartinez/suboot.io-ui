@@ -1,3 +1,65 @@
 .table-container {
+  position: relative;
   margin: 50px;
+}
+
+.table-settings {
+  margin: 30px 0;
+}
+
+.range-options {
+  display: inline-block;
+  position: absolute;
+
+  &.right {
+    right: 0px;
+  }
+
+  &.left {
+    left: 0px;
+  }
+}
+
+.rc-slider {
+  top: 8px;
+  left: 300px;
+}
+
+.rt-tr {
+  padding: 5px 0;
+
+  &.-odd {
+    background-color: #e3e3e3;
+  }
+}
+
+.form-item {
+  position: relative;
+  top: -3px;
+  display: inline-block;
+  color: #fff;
+  min-width: 6px;
+  height: 15px;
+  border-radius: 3px;
+  padding: 3px;
+  margin: 0 2px;
+  line-height: 18px;
+  text-align: center;
+  vertical-align: center;
+
+  &.W {
+    background-color: green;
+  }
+
+  &.D {
+    background-color: green;
+    height: 5px;
+  }
+
+  &.L {
+    background-color: red;
+    top: 6px;
+  }
+
+
 }
