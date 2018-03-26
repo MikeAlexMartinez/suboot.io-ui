@@ -5,12 +5,20 @@ import PropTypes from 'prop-types';
 import ReactTable from 'react-table';
 import 'react-table/react-table.css';
 
+
 const FormItem = ({value}) => (
   <span className={`form-item ${value}`}></span>
 );
 
 FormItem.propTypes = {
   value: PropTypes.string.isRequired,
+};
+
+const formGrid = (props) => {
+  const results = props.value.slice(0,10).reverse();
+  return results.map((value, i) => {
+    return <FormItem key={i} value={value} />;
+  });
 };
 
 const TableNumber = ({value}) => (
@@ -86,10 +94,8 @@ const Table = ({ data }) => {
   }, {
     Header: 'Form',
     accessor: 'form',
-    Cell: props => props.value.map((value, i) => {
-      return <FormItem key={i} value={value} />;
-    }),
-    width: 140,
+    Cell: formGrid,
+    width: 110,
   }];
   
   return (

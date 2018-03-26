@@ -21,35 +21,28 @@ const rangeStyle = {
 
 const fixtureTypes = [
   {
-    name: 'All',
-    active: true,
+    name: 'all'
   }, {
-    name: 'Home',
-    active: false,
+    name: 'home'
   }, {
-    name: 'Away',
-    active: false,
+    name: 'away'
   }
 ];
 
 const sliderOptions = [
   {
-    name: 'All', 
-    active: true
+    name: 'all'
   }, {
-    name: 'To',
-    active: false
+    name: 'to'
   }, {
-    name: 'Range',
-    active: false
+    name: 'range'
   }, {
-    name: 'Last N',
-    active: false
+    name: 'last n'
   }
 ];
 
 const SliderButtons = (props) => {
-  const { options, changeValue } = props;
+  const { options, changeValue, selected } = props;
   return (
     <div className={`range-options ${props.position}`}>
       {options.map((opt) => {
@@ -58,7 +51,7 @@ const SliderButtons = (props) => {
             key={opt.name.replace(' ', '-').toLowerCase()}
             variant="raised"
             size="small"
-            color={opt.active ? 'primary' : 'default'}
+            color={opt.name === selected.replace('-', ' ') ? 'primary' : 'default'}
             styles={{marginLeft: '5px'}}
             onClick={() => changeValue(opt.name.replace(' ','-').toLowerCase())}
           >
@@ -87,7 +80,7 @@ const handle = (props) => {
 
 class TableSettings extends React.Component {
   render() {
-    const {rangeStart, rangeEnd, 
+    const {rangeStart, rangeEnd, rangeSelection, fixturesSelected, 
       rangeClick, fixturesClick, setRange} = this.props;
     return (
       <div className='table-settings'>
@@ -95,6 +88,7 @@ class TableSettings extends React.Component {
           options={sliderOptions} 
           position='left' 
           changeValue={rangeClick}
+          selected={rangeSelection}
         />
         <div style={rangeStyle}>
           <Range 
@@ -116,6 +110,7 @@ class TableSettings extends React.Component {
           options={fixtureTypes}
           position='right'
           changeValue={fixturesClick}
+          selected={fixturesSelected}
         />
       </div>
     );

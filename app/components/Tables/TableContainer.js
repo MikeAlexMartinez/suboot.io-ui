@@ -2,14 +2,13 @@
 
 import React from 'react';
 import PropTypes from 'prop-types';
-import axios from 'axios';
+
 import Table from './Table';
 import TableSettings from './TableSettings';
-import {createTables} from '../../utils/tables';
-import {getTableData} from '../../utils/api';
 import Loading from '../Loading';
 
-import testData from '../../../__tests__/tableData';
+import {createTables} from '../../utils/tables';
+import {getTableData} from '../../utils/api';
 
 class TableContainer extends React.Component {
   constructor (props) {
