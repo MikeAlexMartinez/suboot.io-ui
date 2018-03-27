@@ -10,12 +10,19 @@ import Loading from '../Loading';
 import {createTables} from '../../utils/tables';
 import {getTableData} from '../../utils/api';
 
+/**
+ * Settings logic:
+ * 
+ * rangeSelection:
+ *  - all 
+ */
 class TableContainer extends React.Component {
   constructor (props) {
     super(props);
     this.state = {
+      max: props.max,
       rangeSelection: 'all',
-      rangeStart: 0,
+      rangeStart: 1,
       rangeEnd: props.max,
       fixturesSelected: 'all',
       fixtures: [],
@@ -56,6 +63,12 @@ class TableContainer extends React.Component {
   }
 
   setRange([start, end]) {
+    // if range selection is 'all' or
+    // start === 1 && end === max,  
+    // fetch all.
+    // i.e. createTable({teams, fixtures, })
+    //   else
+    //
     this.setState({
       rangeStart: start,
       rangeEnd: end
@@ -63,6 +76,7 @@ class TableContainer extends React.Component {
   }
 
   handleRangeClick(val) {
+    // create tables
     this.setState({
       rangeSelection: val
     });
