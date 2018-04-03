@@ -18,20 +18,7 @@
  * @return {object.away} - table using just away games
  * @return {object.total} - table using all games.
  */
-function createTables({teams, fixtures, all, range, start, end, lastXGames, tables}) { 
-  if (fixtures === null || fixtures.length === 0) {
-    return tables;
-  } else {
-    
-    if (tables) {
-
-    }
-    
-    const [fixture, ...rest] = fixtures;
-    
-    
-
-  }
+function createTables({teams, fixtures, all, range, start, end, lastXGames}) { 
   
   // define respective object pieces that will be returned.
   let home = teams.reduce((a, b) => {
@@ -48,20 +35,27 @@ function createTables({teams, fixtures, all, range, start, end, lastXGames, tabl
     };
     return a;
   }, {});
+  let away = {...home};
+  let total = {...home};
 
+  let tables = {
+    home, away, total
+  };
 
-  return {
-    home,
-    away,
-    total
-  }
+  const options = {all, range, start, end, lastXGames};
+
+  fixtures.forEach((f) => {
+    tables = processFixture(tables, f, options);
+  });
+
+  return tables;
 }
 
-function processFixture ({home, away, total}, fixture) {
-  const newHome = processHomeTeam({fixture, home});
-  const newAway = processAwayTeam({fixture, away});
-  const intermediateTotal = processTotalHomeTeam({fixture, total});
-  const newTotal = processTotalAwayTeam({fixture, total: intermediateTotal});
+function processFixture ({home, away, total}, fixture, options) {
+  const newHome = processHomeTeam({fixture, home, options});
+  const newAway = processAwayTeam({fixture, away, options});
+  const intermediateTotal = processTotalHomeTeam({fixture, total, options});
+  const newTotal = processTotalAwayTeam({fixture, total: intermediateTotal, options});
 
   return {
     home: newHome,
@@ -70,20 +64,71 @@ function processFixture ({home, away, total}, fixture) {
   };
 }
 
-function processHomeTeam({fixture, home}) {
-  
+function processHomeTeam({fixture, home, options}) {
+  const {all, range, start, end, lastXGames} = options;
+  const result = checkResult(fixture.result, 'home');
+  const team = home[fixture.home_team_short];
+  const newTeam = {...team};
+
+  if (all || 
+    (range === true &&
+      fixture.gameweek_id >= start &&
+      fixture.gameweek_id <= end) ||
+    (lastXGames && 
+      team.played < lastXGames)
+  ) {
+    newTeam.played = team.played + 1;
+    newTeam.won = team.won + (result === 'W' ? 1 : 0);
+    newTeam.draw = team.draw + (result === 'D' ? 1 : 0);
+    newTeam.lost = team.lost + (result === 'L' ? 1 : 0);
+    newTeam.for = team.for + fixture.home_fix_goals;
+    newTeam.against = team.against + fixture.away_fix_goals;
+    newTeam.points = team.points + fixture.home_fix_points;
+    newTeam.form = team.form.concat([result]);
+  }
+
+  return {
+    ...home,
+    [fixture.home_team_short]: newTeam,
+  };
 }
 
-function processAwayTeam({fixture, away}) {
+function processAwayTeam({fixture, away, options}) {
 
 }
 
-function processTotalHomeTeam({fixture, total}) {
+function processTotalHomeTeam({fixture, total, options}) {
 
 }
 
-function processTotalAwayTeam({fixture, total}) {
+function processTotalAwayTeam({fixture, total, options}) {
 
 }
 
-module.exports = {createTables};
+function checkResult(result, homeOrAway) {
+  if (result === 'SD' || result === 'ND') {
+    return 'D';
+  }
+  if (result === 'HW') {
+    if (homeOrAway === 'home') {
+      return 'W';
+    } else {
+      return 'L'
+    }
+  }
+  if (result === 'AW') {
+    if (homeOrAway === 'home') {
+      return 'L';
+    } else {
+      return 'W'
+    }
+  }
+}
+
+module.exports = {
+  createTables, 
+  processHomeTeam,
+  processAwayTeam,
+  processTotalHomeTeam,
+  processTotalAwayTeam
+};

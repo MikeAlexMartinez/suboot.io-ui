@@ -1,127 +1,272 @@
-'use strict';
-
+const { processHomeTeam,
+  processAwayTeam } = require('../../app/utils/tables');
 const assert = require('assert');
-const { createTables } = require('../utils/tables');
 
-const teams = require('./data/testTeamData.json');
 const fixtures = require('./data/testFixtureData.json');
+const emptyTables = require('./data/emptyTables.json');
 
-const {all: {home: homeAll, away: awayAll, total: totalAll},
-       range: {home: homeRange, away: awayRange, total: totalRange},
-       lastX: {home: homeX, away: awayX, total: totalX}}
-       = require('./data/tableExpectations.json');
+describe('createTables functions', () => {
+  describe('processHomeTeam()', () => {
 
-describe('createTable() (after gameweek 31)', () => {
-  describe('testing result with all as true', () => {
-    const {home: homeTable, away: awayTable, total: totalTable} = createTables({
-      teams,
-      fixtures,
-      all: true,
+    test('when all is true', () => {
+
+      const options = {all: true};
+      const home = {...emptyTables.home};
+      const fixture = fixtures[0];
+      const newHome = processHomeTeam({fixture, home, options});
+      
+      const liverpoolHome = {
+        'teamName': 'Liverpool',
+        'played': 1,
+        'won': 1,
+        'draw': 0,
+        'lost': 0,
+        'for': 5,
+        'against': 0,
+        'points': 3,
+        'form': ['W']
+      };
+
+      assert.deepEqual(
+        newHome['LIV'],
+        liverpoolHome,
+        'Home table should have processed Liverpool win'
+      );
     });
 
-    it('should calculate correct total table', () => {
-      assert.deepEqual(totalTable[0], totalAll.manCity,
-        'total table should return man city stats as defined.'
+    test('with range of 5 to 9 (Liverpool)', () => {
+
+      const options = {all: false, range: true, start: 5, end: 9};
+      const home = {...emptyTables.home};
+      const fixtureArr = fixtures.filter((f) => f.home_team_short === 'LIV');
+      let newHome = {...home};
+
+      // should only process home fixtures betweem GW5 and GW9 inclusive.
+      // fixtures 75 and 44 qualify
+      const afterLiv = {
+        'teamName': 'Liverpool',
+        'played': 2,
+        'won': 0,
+        'draw': 2,
+        'lost': 0,
+        'for': 1,
+        'against': 1,
+        'points': 2,
+        'form': ['D','D'] // most recent game at beginning of array
+      };
+
+      fixtureArr.forEach((fixture) => {
+        newHome = processHomeTeam({ fixture, home: newHome, options});
+      });
+
+      assert.deepEqual(
+        newHome['LIV'],
+        afterLiv,
+        'should only process fixtures with gameweek_id between 5 and 9 inclusive'
       );
-      assert.deepEqual(totalTable[19], totalAll.westBrom,
-        'total table should return west brom stats as defined.'
-      );
+
     });
 
-    it('should calculate the correct home table', () => {
-      assert.deepEqual(homeTable[0], homeAll.manCity,
-        'total table should return man city stats as defined.'
+    test('with range of 20 to 30 (Spurs)', () => {
+
+      const options = {all: false, range: true, start: 20, end: 30};
+      const home = {...emptyTables.home};
+      const fixtureArr = fixtures.filter((f) => f.home_team_short === 'TOT');
+      let newHome = {...home};
+
+      // should only process home fixtures betweem GW5 and GW9 inclusive.
+      // fixtures 289, 269, 250, 228, 208 and 198 qualify
+      const afterTot = {
+        'teamName': 'Spurs',
+        'played': 6,
+        'won': 5,
+        'draw': 1,
+        'lost': 0,
+        'for': 15,
+        'against': 3,
+        'points': 16,
+        'form': ['W','W','W','W','D','W'] // most recent game at beginning of array
+      };
+
+      fixtureArr.forEach((fixture) => {
+        newHome = processHomeTeam({ fixture, home: newHome, options});
+      });
+
+      assert.deepEqual(
+        newHome['TOT'],
+        afterTot,
+        'should only process home fixtures with gameweek_id between 20 and 30 inclusive'
       );
-      assert.deepEqual(homeTable[19], homeAll.westBrom,
-        'total table should return west brom stats as defined.'
-      );
+
     });
 
-    it('should calculate the correct away table', () => {
-      assert.deepEqual(awayTable[0], awayAll.manCity,
-        'total table should return man city stats as defined.'
+    test('with lastXGames set to 5', () => {
+
+      const options = {
+        all: false,
+        range: false,
+        lastXGames: 5
+      };
+      const home = {...emptyTables.home};
+      const fixtureArr = fixtures.filter((f) => f.home_team_short === 'TOT');
+      let newHome = {...home};
+
+      // should only process last 5 home matches.
+      // fixtures 289, 269, 250, 228 and 208 qualify
+      const afterTot = {
+        'teamName': 'Spurs',
+        'played': 5,
+        'won': 4,
+        'draw': 1,
+        'lost': 0,
+        'for': 10,
+        'against': 1,
+        'points': 13,
+        'form': ['W','W','W','W','D'] // most recent game at beginning of array
+      };
+
+      fixtureArr.forEach((fixture) => {
+        newHome = processHomeTeam({ fixture, home: newHome, options});
+      });
+
+      assert.deepEqual(
+        newHome['TOT'],
+        afterTot,
+        'should only process last 5 home fixtures for Spurs'
       );
-      assert.deepEqual(awayTable[19], awayAll.westBrom,
-        'total table should return west brom stats as defined.'
-      );
+
     });
   });
 
-  describe('testing with a range of fixtures, Gameweeks 11-20', () => {
-    const {home: homeTable, away: awayTable, total: totalTable} = createTables({
-      teams,
-      fixtures,
-      all: false,
-      range: true,
-      start: 11,
-      end: 20,
-    });
+  describe('processAwayTeam()', () => {
 
-    it('should calculate correct total table', () => {
-      assert.deepEqual(totalTable[0], totalRange.manCity,
-        'total table should return man city stats as defined.'
-      );
-      assert.deepEqual(totalTable[19], totalRange.newcastle,
-        'total table should return west brom stats as defined.'
-      );
-    });
+    test('when all is true', () => {
 
-    it('should calculate the correct home table', () => {
-      assert.deepEqual(homeTable[0], homeRange.manCity,
-        'total table should return man city stats as defined.'
-      );
-      assert.deepEqual(homeTable[19], homeRange.newcastle,
-        'total table should return west brom stats as defined.'
-      );
-    });
+      const options = {all: true};
+      const away = {...emptyTables.away};
+      const fixture = fixtures[0];
+      const newAway = processAwayTeam({fixture, away, options});
+      
+      const watfordAway = {
+        'teamName': 'Watford',
+        'played': 1,
+        'won': 0,
+        'draw': 0,
+        'lost': 1,
+        'for': 0,
+        'against': 5,
+        'points': 0,
+        'form': ['L']
+      };
 
-    it('should calculate the correct away table', () => {
-      assert.deepEqual(awayTable[0], awayRange.manCity,
-        'total table should return man city stats as defined.'
-      );
-      assert.deepEqual(awayTable[12], awayRange.newcastle,
-        'total table should return west brom stats as defined.'
-      );
-    });
-  });
-
-  describe('testing with a last X fixtures, X = 5', () => {
-    const {home: homeTable, away: awayTable, total: totalTable} = createTables({
-      teams,
-      fixtures,
-      all: false,
-      range: false,
-      lastXGames: 5,
-    });
-    console.log(totalTable.map((t) => t.teamName));
-    console.log(homeTable.map((t) => t.teamName));
-    console.log(awayTable.map((t) => t.teamName));
-
-    it('should calculate correct total table', () => {
-      assert.deepEqual(totalTable[1], totalX.manCity,
-        'total table should return man city stats as defined.'
-      );
-      assert.deepEqual(totalTable[2], totalX.liverpool,
-        'total table should return west brom stats as defined.'
+      assert.deepEqual(
+        newAway['WAT'],
+        watfordAway,
+        'Away table should have processed Watford Loss'
       );
     });
 
-    it('should calculate the correct home table', () => {
-      assert.deepEqual(homeTable[0], homeX.manCity,
-        'total table should return man city stats as defined.'
+    test('with range of 5 to 9 (Liverpool)', () => {
+
+      const options = {all: false, range: true, start: 5, end: 9};
+      const away = {...emptyTables.away};
+      const fixtureArr = fixtures.filter((f) => f.away_team_short === 'LIV');
+      let newAway = {...away};
+
+      // should only process home fixtures betweem GW5 and GW9 inclusive.
+      // fixtures 75 and 44 qualify
+      const afterLiv = {
+        'teamName': 'Liverpool',
+        'played': 2,
+        'won': 0,
+        'draw': 2,
+        'lost': 0,
+        'for': 1,
+        'against': 1,
+        'points': 2,
+        'form': ['D','D'] // most recent game at beginning of array
+      };
+
+      fixtureArr.forEach((fixture) => {
+        newAway = processAwayTeam({ fixture, away: newAway, options});
+      });
+
+      assert.deepEqual(
+        newAway['LIV'],
+        afterLiv,
+        'should only process away, Liverpool fixtures with gameweek_id between 5 and 9 inclusive'
       );
-      assert.deepEqual(homeTable[1], homeX.liverpool,
-        'total table should return west brom stats as defined.'
-      );
+
     });
 
-    it('should calculate the correct away table', () => {
-      assert.deepEqual(awayTable[1], awayX.manCity,
-        'total table should return man city stats as defined.'
+    test('with range of 20 to 30 (Spurs)', () => {
+
+      const options = {all: false, range: true, start: 20, end: 30};
+      const away = {...emptyTables.away};
+      const fixtureArr = fixtures.filter((f) => f.away_team_short === 'TOT');
+      let newAway = {...away};
+
+      // should only process home fixtures betweem GW20 and GW30 inclusive.
+      // fixtures  and  qualify
+      const afterTot = {
+        'teamName': 'Spurs',
+        'played': 6,
+        'won': 5,
+        'draw': 1,
+        'lost': 0,
+        'for': 15,
+        'against': 3,
+        'points': 16,
+        'form': ['W','W','W','W','D','W'] // most recent game at beginning of array
+      };
+
+      fixtureArr.forEach((fixture) => {
+        newAway = processAwayTeam({ fixture, away: newAway, options});
+      });
+
+      assert.deepEqual(
+        newAway['TOT'],
+        afterTot,
+        'should only process away fixtures with gameweek_id between 20 and 30 inclusive'
       );
-      assert.deepEqual(awayTable[3], awayX.liverpool,
-        'total table should return west brom stats as defined.'
+
+    });
+
+    test('with lastXGames set to 5', () => {
+
+      const options = {
+        all: false,
+        range: false,
+        lastXGames: 5
+      };
+      const away = {...emptyTables.away};
+      const fixtureArr = fixtures.filter((f) => f.away_team_short === 'TOT');
+      let newAway = {...away};
+
+      // should only process last spurs 5 away matches.
+      // fixtures  qualify
+      const afterTot = {
+        'teamName': 'Spurs',
+        'played': 5,
+        'won': 4,
+        'draw': 1,
+        'lost': 0,
+        'for': 10,
+        'against': 1,
+        'points': 13,
+        'form': ['W','W','W','W','D'] // most recent game at beginning of array
+      };
+
+      fixtureArr.forEach((fixture) => {
+        newAway = processAwayTeam({ fixture, away: newAway, options});
+      });
+
+      assert.deepEqual(
+        newAway['TOT'],
+        afterTot,
+        'should only process last 5 away fixtures for Spurs'
       );
+
     });
   });
 });
