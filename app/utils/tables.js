@@ -48,6 +48,8 @@ function createTables({teams, fixtures, all, range, start, end, lastXGames}) {
     tables = processFixture(tables, f, options);
   });
 
+  // need to add goal difference, and 'arrayify' sorted results;
+  
   return tables;
 }
 
@@ -94,15 +96,90 @@ function processHomeTeam({fixture, home, options}) {
 }
 
 function processAwayTeam({fixture, away, options}) {
+  const {all, range, start, end, lastXGames} = options;
+  const result = checkResult(fixture.result, 'away');
+  const team = away[fixture.away_team_short];
+  const newTeam = {...team};
 
+  if (all || 
+    (range === true &&
+      fixture.gameweek_id >= start &&
+      fixture.gameweek_id <= end) ||
+    (lastXGames && 
+      team.played < lastXGames)
+  ) {
+    newTeam.played = team.played + 1;
+    newTeam.won = team.won + (result === 'W' ? 1 : 0);
+    newTeam.draw = team.draw + (result === 'D' ? 1 : 0);
+    newTeam.lost = team.lost + (result === 'L' ? 1 : 0);
+    newTeam.for = team.for + fixture.away_fix_goals;
+    newTeam.against = team.against + fixture.home_fix_goals;
+    newTeam.points = team.points + fixture.away_fix_points;
+    newTeam.form = team.form.concat([result]);
+  }
+
+  return {
+    ...away,
+    [fixture.away_team_short]: newTeam,
+  };
 }
 
 function processTotalHomeTeam({fixture, total, options}) {
+  const {all, range, start, end, lastXGames} = options;
+  const result = checkResult(fixture.result, 'home');
+  const team = total[fixture.home_team_short];
+  const newTeam = {...team};
 
+  if (all || 
+    (range === true &&
+      fixture.gameweek_id >= start &&
+      fixture.gameweek_id <= end) ||
+    (lastXGames && 
+      team.played < lastXGames)
+  ) {
+    newTeam.played = team.played + 1;
+    newTeam.won = team.won + (result === 'W' ? 1 : 0);
+    newTeam.draw = team.draw + (result === 'D' ? 1 : 0);
+    newTeam.lost = team.lost + (result === 'L' ? 1 : 0);
+    newTeam.for = team.for + fixture.home_fix_goals;
+    newTeam.against = team.against + fixture.away_fix_goals;
+    newTeam.points = team.points + fixture.home_fix_points;
+    newTeam.form = team.form.concat([result]);
+  }
+
+  return {
+    ...total,
+    [fixture.home_team_short]: newTeam,
+  };
 }
 
 function processTotalAwayTeam({fixture, total, options}) {
+  const {all, range, start, end, lastXGames} = options;
+  const result = checkResult(fixture.result, 'away');
+  const team = total[fixture.away_team_short];
+  const newTeam = {...team};
 
+  if (all || 
+    (range === true &&
+      fixture.gameweek_id >= start &&
+      fixture.gameweek_id <= end) ||
+    (lastXGames && 
+      team.played < lastXGames)
+  ) {
+    newTeam.played = team.played + 1;
+    newTeam.won = team.won + (result === 'W' ? 1 : 0);
+    newTeam.draw = team.draw + (result === 'D' ? 1 : 0);
+    newTeam.lost = team.lost + (result === 'L' ? 1 : 0);
+    newTeam.for = team.for + fixture.away_fix_goals;
+    newTeam.against = team.against + fixture.home_fix_goals;
+    newTeam.points = team.points + fixture.away_fix_points;
+    newTeam.form = team.form.concat([result]);
+  }
+
+  return {
+    ...total,
+    [fixture.away_team_short]: newTeam,
+  };
 }
 
 function checkResult(result, homeOrAway) {
@@ -113,20 +190,21 @@ function checkResult(result, homeOrAway) {
     if (homeOrAway === 'home') {
       return 'W';
     } else {
-      return 'L'
+      return 'L';
     }
   }
   if (result === 'AW') {
     if (homeOrAway === 'home') {
       return 'L';
     } else {
-      return 'W'
+      return 'W';
     }
   }
 }
 
 module.exports = {
-  createTables, 
+  createTables,
+  processFixture,
   processHomeTeam,
   processAwayTeam,
   processTotalHomeTeam,
