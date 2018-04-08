@@ -606,31 +606,145 @@ describe('createTables functions', () => {
   describe('createTables()', () => {
 
     test('create tables with all available fixtures', () => {
-      
       const tables = createTables({
         teams, fixtures, all: true
       });
-
       const {home, away, total} = tables;
-
       const {home: testHome, away: testAway, total: testTotal} = testTables.all;
 
       assert.deepEqual(
-        home['MCI'],
+        home[0],
         testHome.manCity,
         'expect home table to have correct stats for Man City'
       );
 
       assert.deepEqual(
-        total['MCI'],
+        total[0],
         testTotal.manCity,
         'expect total table to have correct stats for Man City'
       );
 
       assert.deepEqual(
-        away['MCI'],
+        away[0],
         testAway.manCity,
         'expect away table to have correct stats for Man City'
+      );
+
+      assert.deepEqual(
+        home[19],
+        testHome.westBrom,
+        'expect home table to have correct stats for West Brom'
+      );
+
+      assert.deepEqual(
+        away[19],
+        testAway.westBrom,
+        'expect away table to have correct stats for West Brom'
+      );
+
+      assert.deepEqual(
+        total[19],
+        testTotal.westBrom,
+        'expect total table to have correct stats for West Brom'
+      );
+
+    });
+
+    test('create tables with range of fixtures (11-20)', () => {
+      const tables = createTables({
+        teams,
+        fixtures,
+        all: false,
+        range: true,
+        start: 11,
+        end: 20
+      });
+      const {home, away, total} = tables;
+      const {home: testHome, away: testAway, total: testTotal} = testTables.range;
+
+      assert.deepEqual(
+        home[0],
+        testHome.manCity,
+        'expect home table to have correct stats for Man City'
+      );
+
+      assert.deepEqual(
+        total[0],
+        testTotal.manCity,
+        'expect total table to have correct stats for Man City'
+      );
+
+      assert.deepEqual(
+        away[0],
+        testAway.manCity,
+        'expect away table to have correct stats for Man City'
+      );
+
+      assert.deepEqual(
+        home[19],
+        testHome.newcastle,
+        'expect home table to have correct stats for Newcastle'
+      );
+
+      assert.deepEqual(
+        away[12],
+        testAway.newcastle,
+        'expect away table to have correct stats for Newcastle'
+      );
+
+      assert.deepEqual(
+        total[19],
+        testTotal.newcastle,
+        'expect total table to have correct stats for Newcastle'
+      );
+
+    });
+
+    test('create tables with lastXGames (x being 5)', () => {
+      const tables = createTables({
+        teams,
+        fixtures,
+        all: false,
+        range: false,
+        lastXGames: 5,
+      });
+      const {home, away, total} = tables;
+      const {home: testHome, away: testAway, total: testTotal} = testTables.lastX;
+
+      assert.deepEqual(
+        home[0],
+        testHome.manCity,
+        'expect home table to have correct stats for Man City'
+      );
+
+      assert.deepEqual(
+        total[0],
+        testTotal.manCity,
+        'expect total table to have correct stats for Man City'
+      );
+
+      assert.deepEqual(
+        away[3],
+        testAway.manCity,
+        'expect away table to have correct stats for Man City'
+      );
+
+      assert.deepEqual(
+        home[1],
+        testHome.liverpool,
+        'expect home table to have correct stats for Liverpool'
+      );
+
+      assert.deepEqual(
+        away[1],
+        testAway.liverpool,
+        'expect away table to have correct stats for Liverpool'
+      );
+
+      assert.deepEqual(
+        total[2],
+        testTotal.liverpool,
+        'expect total table to have correct stats for Liverpool'
       );
 
     });

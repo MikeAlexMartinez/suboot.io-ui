@@ -215,7 +215,7 @@
         "lost": 1,
         "for": 14,
         "against": 3,
-        "goal_difference": -11,
+        "goal_difference": 11,
         "points": 12,
         "form": ["W", "L", "W", "W", "W"]
       }
@@ -260,7 +260,7 @@
         "against": 5,
         "goal_difference": 4,
         "points": 8,
-        "form": ["D", "L", "D", "W", "W"]
+        "form": ["W", "W", "D", "L", "D"]
       },
       "liverpool": {
         "teamName": "Liverpool",
@@ -273,7 +273,7 @@
         "against": 4,
         "goal_difference": 4,
         "points": 9,
-        "form": ["W", "L", "W", "W", "L"]
+        "form": ["L", "W", "W", "L", "W"]
       }
     }
   }

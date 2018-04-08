@@ -1,5 +1,7 @@
 'use strict';
 
+import { compose } from 'redux';
+
 /**
  * this will contain an algorithm to construct home, away, or total
  * league tables based on the fixtures data, and setting present
@@ -49,8 +51,81 @@ function createTables({teams, fixtures, all, range, start, end, lastXGames}) {
   });
 
   // need to add goal difference, and 'arrayify' sorted results;
-  
-  return tables;
+  const {home: homeTable, away: awayTable, total: totalTable} = tables;
+
+  return {
+    home: compose(sortTable, addGoalDifference, arrayify)(homeTable),
+    away: compose(sortTable, addGoalDifference, arrayify)(awayTable),
+    total: compose(sortTable, addGoalDifference, arrayify)(totalTable),
+  };
+}
+
+/**
+ * takes an object of objects and returns an array of the passed objects
+ * objects, with the key embedded.
+ * @param {object} obj
+ * @return {array}
+ */
+function arrayify(obj) {
+  return Object.keys(obj).map((key) => {
+    return {
+      ...obj[key],
+      key,
+    };
+  });
+}
+
+
+/**
+ * takes array and adds goal difference for each item
+ * @param {array} table
+ * @return {array}
+ */
+function addGoalDifference(table) {
+  return table.map((team) => ({
+    ...team,
+    goal_difference: team.for - team.against,
+  }));
+}
+
+/**
+ * Sort Table, takes array and sorts league table array accordingly
+ * @param {array} arr
+ * @return {array}
+ */
+function sortTable(arr) {
+  return arr.sort((a, b) => {
+    // points hightest desc
+    if (b.points < a.points) {
+      return -1;
+    } else if (a.points < b.points) {
+      return 1;
+    } else {
+      // goal difference desc
+      if (b.goal_difference < a.goal_difference) {
+        return -1;
+      } else if (a.goal_difference < b.goal_difference) {
+        return 1;
+      } else {
+        // goals for desc
+        if (b.for < a.for) {
+          return -1;
+        } else if (a.for < b.for) {
+          return 1;
+        } else {
+          // team name (lowercase) asc
+          let aName = a.teamName.toLowerCase();
+          let bName = b.teamName.toLowerCase();
+
+          if (aName < bName) {
+            return -1;
+          } else {
+            return 1;
+          }
+        }
+      }
+    }
+  });
 }
 
 function processFixture ({home, away, total}, fixture, options) {
