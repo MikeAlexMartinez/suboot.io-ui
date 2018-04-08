@@ -20,8 +20,7 @@ import { compose } from 'redux';
  * @return {object.away} - table using just away games
  * @return {object.total} - table using all games.
  */
-function createTables({teams, fixtures, all, range, start, end, lastXGames}) { 
-  
+function createTables({teams, fixtures, all, range, start, end, lastXGames}) {
   // define respective object pieces that will be returned.
   let home = teams.reduce((a, b) => {
     a[b.short_name] = {
